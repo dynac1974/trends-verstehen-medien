@@ -1,0 +1,67 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import SocialButtons from "../components/site/SocialButtons.astro";
+
+const facts = [
+  { label: "Neue Themen", value: "täglich" },
+  { label: "Erklärvideo", value: "≈ 3 Min." },
+  { label: "Shorts", value: "< 60 Sek." },
+  { label: "Kosten für dich", value: "0 €" },
+];
+const steps = [
+  { n: "1", title: "Trend finden", text: "Jeden Morgen schauen wir, welche Themen in Deutschland gerade am meisten gesucht und diskutiert werden." },
+  { n: "2", title: "Fakten prüfen", text: "Wir lesen die Quellen: Behörden, Studien, seriöse Medien. Was noch offen oder nur geschätzt ist, sagen wir dazu." },
+  { n: "3", title: "Einfach erklären", text: "Daraus entstehen ein kurzes Erklärvideo, ein Short und ein Blogbeitrag. Mit Grafiken, Animationen und klarer Sprache." },
+];
+---
+
+<SiteLayout title="Über uns" description="Trends verstehen erklärt jeden Tag einen aktuellen Trend: kurz, einfach und faktenbasiert. Lerne Moderator Tim und unsere Arbeitsweise kennen.">
+  <section class="grid-bg border-b border-border">
+    <div class="mx-auto grid max-w-6xl items-end gap-8 px-4 pt-12 sm:px-6 md:grid-cols-[1.3fr_1fr]">
+      <div class="pb-12 md:pb-16">
+        <p class="eyebrow !text-blue-ink">Über uns</p>
+        <h1 class="mt-2 text-4xl font-black leading-tight tracking-tight sm:text-5xl">Damit du mitreden kannst.</h1>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">Jeden Tag gibt es neue Schlagzeilen, Hashtags und Aufreger. Oft fehlt die Zeit, alles zu verstehen. Genau hier setzt <strong class="text-foreground">Trends verstehen</strong> an: Wir nehmen einen aktuellen Trend und erklären ihn so, dass ihn jeder versteht. Ohne Fachchinesisch, ohne Panikmache.</p>
+        <SocialButtons class="mt-7" />
+      </div>
+      <img src="/img/tim-point.png" alt="Moderator Tim zeigt auf den Text" width="900" height="755" class="mx-auto w-full max-w-sm" />
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 pt-14 sm:px-6">
+    <dl class="grid grid-cols-2 gap-4 md:grid-cols-4">
+      {facts.map((f) => (
+        <div class="rounded-lg border border-border bg-card p-6 text-center">
+          <dt class="text-sm font-semibold text-muted-foreground">{f.label}</dt>
+          <dd class="mt-1 text-3xl font-black text-blue-ink">{f.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
+    <h2 class="text-3xl font-extrabold tracking-tight">So entsteht ein Video</h2>
+    <ol class="mt-8 grid gap-6 md:grid-cols-3">
+      {steps.map((s) => (
+        <li class="rounded-lg border border-border bg-card p-7">
+          <span class="grid h-11 w-11 place-items-center rounded-full bg-amber text-lg font-black text-foreground">{s.n}</span>
+          <h3 class="mt-4 text-xl font-bold">{s.title}</h3>
+          <p class="mt-2 leading-relaxed text-muted-foreground">{s.text}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
+    <div class="grid gap-8 rounded-[28px] bg-secondary p-8 sm:p-12 md:grid-cols-2">
+      <div>
+        <h2 class="text-2xl font-extrabold">Das ist Tim</h2>
+        <p class="mt-3 leading-relaxed text-muted-foreground">Tim ist unser gezeichneter Moderator. Er führt dich durch jedes Video, zeigt auf die wichtigen Grafiken und sorgt dafür, dass auch schwierige Themen Spaß machen. Tim ist eine Animationsfigur und kein echter Mensch.</p>
+      </div>
+      <div>
+        <h2 class="text-2xl font-extrabold">Fakten mit Kennzeichnung</h2>
+        <p class="mt-3 leading-relaxed text-muted-foreground">In unseren Videos markieren wir, was <strong class="text-foreground">offiziell</strong> bestätigt ist, was eine <strong class="text-foreground">Schätzung</strong> ist und was noch <strong class="text-foreground">offen</strong> ist. Fehler korrigieren wir offen. Hinweise gerne per Kommentar oder Nachricht auf Facebook.</p>
+      </div>
+    </div>
+  </section>
+</SiteLayout>

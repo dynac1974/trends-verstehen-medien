@@ -1,0 +1,15 @@
+---
+import Icon from "./Icon.astro";
+import { SITE } from "../../lib/site";
+interface Props { size?: "md" | "lg"; class?: string }
+const { size = "md", class: cls = "" } = Astro.props;
+const pad = size === "lg" ? "px-6 py-3.5 text-base" : "px-5 py-2.5 text-sm";
+---
+<div class:list={["flex flex-wrap gap-3", cls]}>
+  <a href={SITE.subscribe} target="_blank" rel="noopener" class:list={["inline-flex items-center gap-2 rounded-control bg-youtube font-bold text-white no-underline shadow-[0_8px_24px_-8px_rgba(196,32,45,.6)] transition-transform hover:-translate-y-0.5", pad]}>
+    <Icon name="youtube" /> Kostenlos abonnieren
+  </a>
+  <a href={SITE.facebook} target="_blank" rel="noopener" class:list={["inline-flex items-center gap-2 rounded-control bg-facebook font-bold text-white no-underline transition-transform hover:-translate-y-0.5", pad]}>
+    <Icon name="facebook" /> Auf Facebook folgen
+  </a>
+</div>

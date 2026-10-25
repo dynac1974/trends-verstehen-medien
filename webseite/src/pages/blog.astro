@@ -1,0 +1,44 @@
+---
+// Blog index — data fetched SERVER-SIDE (SEO) and handed to the island as DTO props.
+// Keep this frontmatter; swap the island import to YOUR feed component. The category pills link
+// to the category pages (/blog/category/<slug>) so every filter has a URL; pass no `categoryHref`
+// for client-side filtering instead.
+import SiteLayout from "../layouts/SiteLayout.astro";
+import TrendFeed from "../components/blog/TrendFeed";
+import SocialButtons from "../components/site/SocialButtons.astro";
+import { categoryPath, fetchPosts } from "../wix/blog/posts";
+import { fetchBlogCategories, fetchBlogTags } from "../wix/blog/taxonomy";
+import type { BlogCategory, BlogTag, PostPage } from "../wix/blog/types";
+
+let page: PostPage | undefined;
+let categories: BlogCategory[] = [];
+let tags: BlogTag[] = [];
+let failed = false;
+try {
+  [page, categories, tags] = await Promise.all([fetchPosts(), fetchBlogCategories(), fetchBlogTags()]);
+} catch {
+  // An unguarded SSR throw truncates the response mid-stream. With no seed the island fetches
+  // client-side and shows its own error state — never "No posts yet" for a failed read.
+  failed = true;
+}
+---
+
+<SiteLayout title="Blog" description="Aktuelle Trends zum Nachlesen: Hintergründe, Fakten und Einordnung zu den Themen aus unseren YouTube-Erklärvideos.">
+  <section class="grid-bg border-b border-border">
+    <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16">
+      <p class="eyebrow !text-blue-ink">Blog</p>
+      <h1 class="mt-2 text-4xl font-black tracking-tight sm:text-5xl">Trends zum <span class="mark">Nachlesen</span></h1>
+      <p class="mt-4 max-w-2xl text-lg text-muted-foreground">Die Fakten aus unseren Videos, kompakt aufgeschrieben: Was ist passiert, warum ist das wichtig, und wie geht es weiter?</p>
+      <SocialButtons class="mt-6" />
+    </div>
+  </section>
+  <div class="mx-auto max-w-6xl px-4 pt-10 sm:px-6">
+    <TrendFeed
+      client:load
+      initialPage={failed ? undefined : page}
+      initialCategories={categories}
+      initialTags={tags}
+      categoryHref={categoryPath}
+    />
+  </div>
+</SiteLayout>
