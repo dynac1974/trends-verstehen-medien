@@ -9,5 +9,4 @@ Bauen: Node ≥ 24.18, `npm ci`, `npx astro build`. Veröffentlichen über das W
 `UploadHeadlessWebsiteFiles` (siteId oben). Blogbeiträge brauchen kein neues Release,
 die Seite liest sie live aus Wix.
 
-Impressum und Datenschutz (`src/pages/impressum.astro`, `src/pages/datenschutz.astro`)
-enthalten Platzhalter in eckigen Klammern, die noch ausgefüllt werden müssen.
+Offizielle Adresse: trendsverstehen.de (Weiterleitung auf die Wix-Adresse).
