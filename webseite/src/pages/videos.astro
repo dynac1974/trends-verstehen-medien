@@ -1,0 +1,37 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import SocialButtons from "../components/site/SocialButtons.astro";
+import VideoCard from "../components/site/VideoCard.astro";
+import { fetchVideos } from "../lib/site";
+
+const videos = await fetchVideos();
+const longVideos = videos.filter((v) => !v.short);
+const shorts = videos.filter((v) => v.short);
+---
+
+<SiteLayout title="Videos" description="Alle Erklärvideos und Shorts von Trends verstehen: aktuelle Trends in wenigen Minuten einfach erklärt.">
+  <section class="grid-bg border-b border-border">
+    <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16">
+      <p class="eyebrow !text-blue-ink">Videos</p>
+      <h1 class="mt-2 text-4xl font-black tracking-tight sm:text-5xl">Alle Trends im <span class="mark">Video</span></h1>
+      <p class="mt-4 max-w-2xl text-lg text-muted-foreground">Hier findest du unsere neuesten Erklärvideos und Shorts. Ein Klick öffnet das Video direkt auf YouTube.</p>
+      <SocialButtons class="mt-6" />
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 pt-12 sm:px-6">
+    <h2 class="text-2xl font-extrabold tracking-tight">Erklärvideos</h2>
+    <div class="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {longVideos.map((v) => <VideoCard video={v} />)}
+    </div>
+  </section>
+
+  {shorts.length > 0 && (
+    <section class="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
+      <h2 class="text-2xl font-extrabold tracking-tight">Shorts: Trends in unter 60 Sekunden</h2>
+      <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-5">
+        {shorts.map((v) => <VideoCard video={v} />)}
+      </div>
+    </section>
+  )}
+</SiteLayout>

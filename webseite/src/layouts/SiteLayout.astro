@@ -1,0 +1,101 @@
+---
+// Site chrome for every page. Keep the <slot name="seo-tags" /> in <head> and the global.css import.
+// One source of head tags per page: a page that renders <SEO.Tags> passes NO title/description here.
+import "../styles/global.css";
+import Icon from "../components/site/Icon.astro";
+import { SITE } from "../lib/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title, description } = Astro.props;
+const path = Astro.url.pathname;
+const nav = [
+  { href: "/", label: "Start" },
+  { href: "/blog", label: "Blog" },
+  { href: "/videos", label: "Videos" },
+  { href: "/ueber-uns", label: "Über uns" },
+];
+const active = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#F7F9FC" />
+    {title && <title>{title === SITE.name ? title : `${title} | ${SITE.name}`}</title>}
+    {description && <meta name="description" content={description} />}
+    {title && <meta property="og:title" content={title} />}
+    {description && <meta property="og:description" content={description} />}
+    {title && <meta property="og:image" content={new URL("/img/og.jpg", Astro.url).href} />}
+    {title && <meta property="og:type" content="website" />}
+    <slot name="seo-tags" />
+  </head>
+  <body class="min-h-screen">
+    <a href="#inhalt" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-card focus:px-4 focus:py-2">Zum Inhalt</a>
+    <header class="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
+      <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+        <a href="/" class="flex items-center gap-2.5 no-underline" aria-label="Trends verstehen – Startseite">
+          <img src="/favicon.svg" alt="" width="34" height="34" class="h-[34px] w-[34px]" />
+          <span class="text-[1.05rem] font-extrabold uppercase leading-none tracking-tight text-foreground">Trends <span class="mark">verstehen</span></span>
+        </a>
+        <nav class="hidden items-center gap-1 md:flex" aria-label="Hauptnavigation">
+          {nav.map((n) => (
+            <a href={n.href} aria-current={active(n.href) ? "page" : undefined} class:list={["rounded-control px-3.5 py-2 text-sm font-semibold no-underline transition-colors", active(n.href) ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"]}>{n.label}</a>
+          ))}
+        </nav>
+        <div class="flex items-center gap-2">
+          <a href={SITE.facebook} target="_blank" rel="noopener" aria-label="Trends verstehen auf Facebook" class="hidden h-10 w-10 place-items-center rounded-full text-facebook transition-colors hover:bg-secondary sm:grid"><Icon name="facebook" class="h-5 w-5" /></a>
+          <a href={SITE.subscribe} target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-control bg-youtube px-4 py-2 text-sm font-bold text-white no-underline transition-transform hover:-translate-y-0.5"><Icon name="youtube" class="h-4 w-4" /> Abonnieren</a>
+        </div>
+      </div>
+      <nav class="flex gap-1 overflow-x-auto border-t border-border px-4 py-2 md:hidden" aria-label="Hauptnavigation mobil">
+        {nav.map((n) => (
+          <a href={n.href} aria-current={active(n.href) ? "page" : undefined} class:list={["shrink-0 rounded-control px-3.5 py-1.5 text-sm font-semibold no-underline", active(n.href) ? "bg-secondary text-foreground" : "text-muted-foreground"]}>{n.label}</a>
+        ))}
+      </nav>
+    </header>
+
+    <main id="inhalt">
+      <slot />
+    </main>
+
+    <footer class="mt-24 bg-primary text-primary-foreground">
+      <div class="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div>
+          <p class="text-xl font-extrabold uppercase tracking-tight">Trends verstehen</p>
+          <p class="mt-2 max-w-sm text-white/80">{SITE.claim} Jeden Tag ein neues Thema – kurz, klar und ohne Fachchinesisch.</p>
+          <div class="mt-5 flex gap-3">
+            <a href={SITE.youtube} target="_blank" rel="noopener" aria-label="YouTube" class="grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-youtube"><Icon name="youtube" /></a>
+            <a href={SITE.facebook} target="_blank" rel="noopener" aria-label="Facebook" class="grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-facebook"><Icon name="facebook" /></a>
+          </div>
+        </div>
+        <div>
+          <p class="text-sm font-bold uppercase tracking-wider text-white/60">Entdecken</p>
+          <ul class="mt-3 space-y-2">
+            {nav.map((n) => <li><a href={n.href} class="text-white/90 no-underline hover:text-white">{n.label}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="text-sm font-bold uppercase tracking-wider text-white/60">Folgen</p>
+          <ul class="mt-3 space-y-2">
+            <li><a href={SITE.subscribe} target="_blank" rel="noopener" class="text-white/90 no-underline hover:text-white">YouTube-Kanal abonnieren</a></li>
+            <li><a href={SITE.shorts} target="_blank" rel="noopener" class="text-white/90 no-underline hover:text-white">Shorts ansehen</a></li>
+            <li><a href={SITE.facebook} target="_blank" rel="noopener" class="text-white/90 no-underline hover:text-white">Facebook-Seite</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10">
+        <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-5 text-sm text-white/70 sm:px-6">
+          <span>© {year} Trends verstehen</span>
+          <span class="flex gap-5"><a href="/impressum" class="text-white/80 no-underline hover:text-white">Impressum</a><a href="/datenschutz" class="text-white/80 no-underline hover:text-white">Datenschutz</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

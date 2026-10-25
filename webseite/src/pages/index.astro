@@ -1,0 +1,166 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import Icon from "../components/site/Icon.astro";
+import SocialButtons from "../components/site/SocialButtons.astro";
+import VideoCard from "../components/site/VideoCard.astro";
+import { TrendCard } from "../components/blog/TrendFeed";
+import { fetchPosts } from "../wix/blog/posts";
+import type { PostSummary } from "../wix/blog/types";
+import { SITE, fetchVideos, shortDate } from "../lib/site";
+
+let posts: PostSummary[] = [];
+let postsFailed = false;
+const [postsResult, videos] = await Promise.all([
+  fetchPosts({ limit: 3 }).catch(() => null),
+  fetchVideos(),
+]);
+if (postsResult) posts = postsResult.posts;
+else postsFailed = true;
+
+const longVideos = videos.filter((v) => !v.short);
+const shorts = videos.filter((v) => v.short).slice(0, 4);
+const featured = longVideos[0];
+const moreLong = longVideos.slice(1, 3);
+
+const promises = [
+  { icon: "spark", color: "bg-blue", title: "Topaktuell", text: "Wir greifen jeden Tag auf, worüber Deutschland gerade spricht: Politik, Technik, Wetter, Wissen." },
+  { icon: "bulb", color: "bg-amber", title: "Einfach erklärt", text: "Klare Sprache, bunte Grafiken und Animationen. Du verstehst das Thema auch ohne Vorwissen." },
+  { icon: "clock", color: "bg-coral", title: "Schnell auf den Punkt", text: "Erklärvideos in wenigen Minuten und Shorts unter einer Minute. Perfekt für zwischendurch." },
+] as const;
+---
+
+<SiteLayout
+  title="Trends verstehen"
+  description="Die Trends des Tages, einfach erklärt: kurze Erklärvideos, Shorts und Blogbeiträge zu den Themen, über die gerade alle sprechen. Jetzt auf YouTube abonnieren."
+>
+  <!-- HERO -->
+  <section class="grid-bg relative overflow-hidden border-b border-border">
+    <div class="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-blue/15 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-40 right-0 h-96 w-96 rounded-full bg-amber/20 blur-3xl"></div>
+    <div class="relative mx-auto grid max-w-6xl items-center gap-8 px-4 pt-12 sm:px-6 md:grid-cols-[1.15fr_1fr] md:pt-20">
+      <div class="pb-6 md:pb-20">
+        <p class="rise inline-flex items-center gap-2 rounded-control bg-card px-3.5 py-1.5 text-sm font-semibold text-blue-ink shadow-sm ring-1 ring-border">
+          <span class="h-2 w-2 animate-pulse rounded-full bg-green"></span> Jeden Tag ein neuer Trend
+        </p>
+        <h1 class="rise rise-2 mt-5 text-[2.6rem] font-black leading-[1.05] tracking-tight text-foreground sm:text-6xl">
+          Die Trends des Tages.<br /><span class="mark">Einfach</span> erklärt.
+        </h1>
+        <p class="rise rise-3 mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
+          Worüber reden gerade alle, und was steckt wirklich dahinter? Wir erklären aktuelle Trends in wenigen Minuten, mit klarer Sprache, Grafiken und Animationen.
+        </p>
+        <SocialButtons size="lg" class="rise rise-4 mt-8" />
+        <ul class="rise rise-4 mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-foreground">
+          <li class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-blue"></span>Erklärvideos</li>
+          <li class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-amber"></span>Shorts</li>
+          <li class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-coral"></span>Blog</li>
+          <li class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-green"></span>Kostenlos</li>
+        </ul>
+      </div>
+      <div class="relative mx-auto w-full max-w-md self-end md:max-w-none">
+        <svg class="absolute inset-x-0 top-6 h-48 w-full" viewBox="0 0 400 200" fill="none" aria-hidden="true">
+          <path class="trendline" d="M10 170 L80 140 L130 155 L200 95 L260 110 L330 40 L385 18" stroke="#1597D1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="385" cy="18" r="9" fill="#F2A100" />
+        </svg>
+        <div class="rise rise-3 absolute left-0 top-28 z-10 rounded-lg bg-card px-4 py-3 text-sm font-bold shadow-lg ring-1 ring-border sm:left-2">
+          Hi, ich bin <span class="text-blue-ink">Tim</span>! 👋<br /><span class="font-medium text-muted-foreground">Ich erkläre dir die Trends.</span>
+        </div>
+        <img src="/img/tim-wave.png" alt="Tim, der Moderator von Trends verstehen, winkt" width="871" height="900" class="tim relative mx-auto h-auto w-[78%] max-w-sm" fetchpriority="high" />
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEOS -->
+  <section class="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="eyebrow !text-blue-ink">Frisch auf YouTube</p>
+        <h2 class="mt-1 text-3xl font-extrabold tracking-tight">Neue Erklärvideos</h2>
+      </div>
+      <a href="/videos" class="inline-flex items-center gap-1.5 font-semibold text-blue-ink no-underline hover:underline">Alle Videos <Icon name="arrow" class="h-4 w-4" /></a>
+    </div>
+    {featured && (
+      <div class="mt-8 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+        <a href={featured.url} target="_blank" rel="noopener" class="group relative block min-h-[260px] overflow-hidden rounded-lg bg-primary no-underline">
+          <img src={featured.thumb} alt="" referrerpolicy="no-referrer" class="absolute inset-0 h-full w-full object-cover opacity-90 transition-transform duration-500 group-hover:scale-[1.03]" />
+          <div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/40 to-transparent"></div>
+          <div class="absolute inset-x-0 bottom-0 p-5 sm:p-7">
+            <span class="inline-flex items-center gap-1.5 rounded-control bg-youtube px-3 py-1 text-xs font-bold uppercase tracking-wide text-white"><Icon name="play" class="h-3.5 w-3.5" /> Neuestes Video</span>
+            <h3 class="mt-3 text-xl font-extrabold leading-tight text-white sm:text-2xl">{featured.title}</h3>
+            <p class="mt-1 text-sm text-white/80">{shortDate(featured.published)}</p>
+          </div>
+        </a>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
+          {moreLong.map((v) => <VideoCard video={v} />)}
+        </div>
+      </div>
+    )}
+    {shorts.length > 0 && (
+      <div class="mt-14">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <h2 class="text-2xl font-extrabold tracking-tight">Trends in unter 60 Sekunden</h2>
+          <a href={SITE.shorts} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 font-semibold text-blue-ink no-underline hover:underline">Alle Shorts <Icon name="arrow" class="h-4 w-4" /></a>
+        </div>
+        <div class="mt-6 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+          {shorts.map((v) => <VideoCard video={v} />)}
+        </div>
+      </div>
+    )}
+  </section>
+
+  <!-- BLOG -->
+  <section class="mt-20 bg-secondary/60 py-16">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow !text-blue-ink">Zum Nachlesen</p>
+          <h2 class="mt-1 text-3xl font-extrabold tracking-tight">Neu im Blog</h2>
+          <p class="mt-2 max-w-xl text-muted-foreground">Die wichtigsten Fakten aus unseren Videos, kompakt aufgeschrieben, mit Quellen und Einordnung.</p>
+        </div>
+        <a href="/blog" class="inline-flex items-center gap-1.5 font-semibold text-blue-ink no-underline hover:underline">Zum Blog <Icon name="arrow" class="h-4 w-4" /></a>
+      </div>
+      {postsFailed ? (
+        <p class="mt-8 rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">Die Blogbeiträge konnten gerade nicht geladen werden. <a href="/blog">Zum Blog</a></p>
+      ) : posts.length === 0 ? (
+        <p class="mt-8 rounded-lg border border-dashed border-border bg-card p-8 text-center text-muted-foreground">Die ersten Beiträge erscheinen in Kürze.</p>
+      ) : (
+        <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((p, i) => <TrendCard post={p} index={i} />)}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- PROMISE -->
+  <section class="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
+    <div class="text-center">
+      <p class="eyebrow !text-blue-ink">Unser Versprechen</p>
+      <h2 class="mt-1 text-3xl font-extrabold tracking-tight">Trends, die du in 3 Minuten verstehst</h2>
+    </div>
+    <div class="mt-10 grid gap-6 md:grid-cols-3">
+      {promises.map((p, i) => (
+        <div class="rounded-lg border border-border bg-card p-7 shadow-[0_1px_2px_rgba(21,33,63,.06)]">
+          <span class:list={["grid h-12 w-12 place-items-center rounded-md text-white", p.color]}><Icon name={p.icon} class="h-6 w-6" /></span>
+          <p class="mt-1 text-right text-5xl font-black text-secondary">0{i + 1}</p>
+          <h3 class="-mt-4 text-xl font-bold">{p.title}</h3>
+          <p class="mt-2 leading-relaxed text-muted-foreground">{p.text}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
+    <div class="relative overflow-hidden rounded-[28px] bg-primary px-6 py-12 text-primary-foreground sm:px-12 md:py-16">
+      <div class="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue/30 blur-3xl"></div>
+      <div class="relative grid items-center gap-8 md:grid-cols-[1.3fr_1fr]">
+        <div>
+          <p class="inline-flex items-center gap-2 rounded-control bg-white/10 px-3.5 py-1.5 text-sm font-semibold"><Icon name="bell" class="h-4 w-4" /> Glocke an, nichts verpassen</p>
+          <h2 class="mt-4 text-3xl font-black leading-tight sm:text-4xl">Verpass keinen Trend mehr.</h2>
+          <p class="mt-3 max-w-lg text-lg text-white/80">Abonniere den Kanal kostenlos und folge uns auf Facebook. Jeden Tag gibt es ein neues Thema, einfach erklärt.</p>
+          <SocialButtons size="lg" class="mt-7" />
+        </div>
+        <img src="/img/tim-point.png" alt="" width="900" height="755" loading="lazy" class="mx-auto hidden w-full max-w-xs md:block" />
+      </div>
+    </div>
+  </section>
+</SiteLayout>

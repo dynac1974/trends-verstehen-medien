@@ -1,0 +1,31 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+---
+
+<SiteLayout title="Impressum" description="Impressum von Trends verstehen.">
+  <article class="legal mx-auto max-w-3xl px-4 pt-12 sm:px-6">
+    <h1 class="text-4xl font-black tracking-tight">Impressum</h1>
+    <p class="mt-4 rounded-md border border-amber bg-amber/10 p-4 text-sm"><strong>Hinweis:</strong> Die Angaben in eckigen Klammern müssen vom Betreiber ergänzt werden.</p>
+
+    <h2>Angaben gemäß § 5 DDG</h2>
+    <p>[Vorname Nachname]<br />[Straße Hausnummer]<br />[PLZ Ort]<br />Deutschland</p>
+
+    <h2>Kontakt</h2>
+    <p>E-Mail: [E-Mail-Adresse]<br />Telefon: [optional]</p>
+
+    <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+    <p>[Vorname Nachname], Anschrift wie oben</p>
+
+    <h2>Haftung für Links</h2>
+    <p>Diese Website enthält Links zu externen Websites (z. B. YouTube und Facebook), auf deren Inhalte wir keinen Einfluss haben. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter verantwortlich. Bei Bekanntwerden von Rechtsverletzungen entfernen wir derartige Links umgehend.</p>
+
+    <h2>Urheberrecht</h2>
+    <p>Die Inhalte, Grafiken und Videos auf dieser Website sind urheberrechtlich geschützt. Eine Verwendung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen Zustimmung.</p>
+  </article>
+</SiteLayout>
+
+<style is:global>
+  .legal h2 { margin-top: 2rem; font-size: 1.25rem; font-weight: 800; }
+  .legal p, .legal li { margin-top: .6rem; line-height: 1.7; color: var(--color-foreground); }
+  .legal ul { list-style: disc; padding-left: 1.25rem; }
+</style>
